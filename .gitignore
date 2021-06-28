@@ -1,8 +1,16 @@
 __pycache__
-.venv/
 .DS_Store
 .vscode/
 .idea/
+*$py.class
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
 
 test.py
-
