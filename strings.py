@@ -1,5 +1,4 @@
 
-
 # TITLES
 simulated_annealing_title = 'Recuit simulé'.upper()
 genetic_title = 'Génétique'.upper()
@@ -22,8 +21,12 @@ input_size_of_bits_header = 'Nombre de bits pour coder les chromosomes :'.title(
 input_max_trying_time_for_correct_ruler_header = 'Temps d\'essai max pour corriger une règle '.title() + '(s) :'
 input_algorithm_choice_header = 'Algorithme appliqué :'.title()
 genetic_graph_header = 'Fitness trouvées aprés chaque opération de croisement et mutation en fonction du temps :'.title()
-simulated_annealing_graph_header = 'Fitness trouvées en fonction du temps :'
-results_header = 'Résultats trouvées :'
+simulated_annealing_graph_header = 'Fitness trouvées en fonction du temps :'.title()
+comparison_graph_header = 'Fitness trouvées en fonction du temps :'.title()
+results_header = 'Résultats trouvées :'.title()
+simulated_annealing_parameters_header = 'Paramètres de recuit simulé'.title()
+genetic_parameters_header = 'Paramètres de génétique'.title()
+common_parameters_header = 'Paramètres communs'.title()
 
 # BUTTONS
 start_bu_text = 'Lancer'.upper()

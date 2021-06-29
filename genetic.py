@@ -196,7 +196,6 @@ def rank_selection(population: list[list[int]], marks_count: int, ranks: list[in
 
 
 def tournament_selection(population: list[list[int]], population_size: int, marks_count: int):
-
     k = random.randint(2, population_size)
 
     individuals_index = random.sample(range(0, population_size), k)
@@ -231,7 +230,8 @@ def get_best_individual(population: list[list[int]]):
 
 def genetic(population_size: int, generation_count: int, crossing_probability: float, mutation_probability: float,
             marks_count: int, max_bound: int, size_of_bits: int,
-            max_trying_time_for_correct_ruler: float):
+            max_trying_time_for_correct_ruler: float, y_axis_title: str, chart, with_lock: bool, thread_lock=None,
+            result=None, index=0):
     start = time.time()
     record_best_individuals_from_all_generations = []
 
@@ -242,31 +242,27 @@ def genetic(population_size: int, generation_count: int, crossing_probability: f
     gen = 0
     new_pop = list()
 
-    # draw line chart
-    st.header(strings.genetic_graph_header)
-    df = pd.DataFrame({
-        'time': [(time.time() - start) for _ in range(len(initial_population))],
-        'Fitness': evaluate(initial_population)
-    }).rename(columns={'time': 'index'}).set_index('index')
-
-    chart = st.line_chart(df)
-
     # write results
     results_container = st.beta_container()
-    with results_container:
-        st.header(strings.results_header)
 
-        with st.beta_container():
-            col_title, col_value = st.beta_columns([2, 3])
+    if not with_lock:
+        with results_container:
+            st.header(strings.results_header)
 
-            col_title.write(strings.initial_generation_msg)
-            col_value.markdown(f'<span style="color:#26ba1b">** {initial_population} **</span>', unsafe_allow_html=True)
+            with st.beta_container():
+                col_title, col_value = st.beta_columns([2, 3])
 
-        with st.beta_container():
-            col_title, col_value = st.beta_columns([2, 3])
+                col_title.write(strings.initial_generation_msg)
+                col_value.markdown(f'<span style="color:#26ba1b">** {initial_population} **</span>',
+                                   unsafe_allow_html=True)
 
-            col_title.write(strings.best_ruler_of_this_generation_msg)
-            col_value.markdown(f'<span style="color:#26ba1b">** {get_best_individual(initial_population)} **</span>', unsafe_allow_html=True)
+            with st.beta_container():
+                col_title, col_value = st.beta_columns([2, 3])
+
+                col_title.write(strings.best_ruler_of_this_generation_msg)
+                col_value.markdown(
+                    f'<span style="color:#26ba1b">** {get_best_individual(initial_population)} **</span>',
+                    unsafe_allow_html=True)
 
     while gen < generation_count:
         new_pop.clear()
@@ -311,10 +307,15 @@ def genetic(population_size: int, generation_count: int, crossing_probability: f
                 # draw line chart
                 new_df = pd.DataFrame({
                     'time': [time.time() - start],
-                    'Fitness': [evaluation_function(parent_1)]
+                    y_axis_title: [evaluation_function(parent_1)]
                 }).rename(columns={'time': 'index'}).set_index('index')
 
-                chart.add_rows(new_df)
+                if with_lock:
+                    thread_lock.acquire()
+                    chart.add_rows(new_df)
+                    thread_lock.release()
+                else:
+                    chart.add_rows(new_df)
 
             if not new_pop.__contains__(parent_2) and len(new_pop) < population_size:
                 new_pop.append(parent_2.copy())
@@ -322,10 +323,15 @@ def genetic(population_size: int, generation_count: int, crossing_probability: f
                 # draw line chart
                 new_df = pd.DataFrame({
                     'time': [time.time() - start + 0.2],
-                    'Fitness': [evaluation_function(parent_2)]
+                    y_axis_title: [evaluation_function(parent_2)]
                 }).rename(columns={'time': 'index'}).set_index('index')
 
-                chart.add_rows(new_df)
+                if with_lock:
+                    thread_lock.acquire()
+                    chart.add_rows(new_df)
+                    thread_lock.release()
+                else:
+                    chart.add_rows(new_df)
 
         # updates
         gen += 1
@@ -334,54 +340,59 @@ def genetic(population_size: int, generation_count: int, crossing_probability: f
         best_individual_for_this_generation = get_best_individual(population)
         record_best_individuals_from_all_generations.append(best_individual_for_this_generation)
 
-        with results_container:
-            st.markdown(body='<hr style="margin-top:0;border-top:0.5px solid '
-                             '#bbb;border-radius:5px;color:#90939b;background-color:#90939b;" />',
+        if not with_lock:
+            with results_container:
+                st.markdown(body='<hr style="margin-top:0;border-top:0.5px solid '
+                                 '#bbb;border-radius:5px;color:#90939b;background-color:#90939b;" />',
+                            unsafe_allow_html=True)
+
+                with st.beta_container():
+                    col_title, col_value = st.beta_columns([2, 3])
+
+                    col_title.write(f'{strings.generation_msg} {gen} :\n ')
+                    col_value.markdown(f'<span style="color:#26ba1b">** {population} **</span>', unsafe_allow_html=True)
+
+                with st.beta_container():
+                    col_title, col_value = st.beta_columns([2, 3])
+
+                    col_title.write(strings.best_ruler_of_this_generation_msg)
+                    col_value.markdown(
+                        f'<span style="color:#26ba1b">** {best_individual_for_this_generation} **</span>',
                         unsafe_allow_html=True)
-
-            with st.beta_container():
-                col_title, col_value = st.beta_columns([2, 3])
-
-                col_title.write(f'{strings.generation_msg} {gen} :\n ')
-                col_value.markdown(f'<span style="color:#26ba1b">** {population} **</span>', unsafe_allow_html=True)
-
-            with st.beta_container():
-                col_title, col_value = st.beta_columns([2, 3])
-
-                col_title.write(strings.best_ruler_of_this_generation_msg)
-                col_value.markdown(f'<span style="color:#26ba1b">** {best_individual_for_this_generation} **</span>',
-                               unsafe_allow_html=True)
 
     end = time.time() - start
     best_individual = get_best_individual(record_best_individuals_from_all_generations)
 
     # write results
-    with results_container:
-        st.markdown(body='<hr style="margin-top:2;border-top:2px solid '
-                         '#bbb;border-radius:5px;color:#ef0741;background-color:#ef0741;" />',
-                    unsafe_allow_html=True)
+    if not with_lock:
+        with results_container:
+            st.markdown(body='<hr style="margin-top:2;border-top:2px solid '
+                             '#bbb;border-radius:5px;color:#ef0741;background-color:#ef0741;" />',
+                        unsafe_allow_html=True)
 
-        with st.beta_container():
-            col_title, col_value = st.beta_columns([2, 3])
+            with st.beta_container():
+                col_title, col_value = st.beta_columns([2, 3])
 
-            col_title.write(strings.best_ruler_of_all_generation_msg)
-            col_value.markdown(f'<span style="color:#26ba1b">**{str(best_individual)}**</span>', unsafe_allow_html=True)
+                col_title.write(strings.best_ruler_of_all_generation_msg)
+                col_value.markdown(f'<span style="color:#26ba1b">**{str(best_individual)}**</span>',
+                                   unsafe_allow_html=True)
 
-        with st.beta_container():
-            col_title, col_value = st.beta_columns([2, 3])
+            with st.beta_container():
+                col_title, col_value = st.beta_columns([2, 3])
 
-            col_title.write(strings.best_fitness_msg)
-            col_value.markdown(f'<span style="color:#26ba1b">**{evaluation_function(best_individual)}**</span>',
-                               unsafe_allow_html=True)
+                col_title.write(strings.best_fitness_msg)
+                col_value.markdown(f'<span style="color:#26ba1b">**{evaluation_function(best_individual)}**</span>',
+                                   unsafe_allow_html=True)
 
-        with st.beta_container():
-            col_title, col_value = st.beta_columns([2, 3])
+            with st.beta_container():
+                col_title, col_value = st.beta_columns([2, 3])
 
-            col_title.write(strings.run_time_msg)
-            col_value.markdown(f'<span style="color:#26ba1b">**{end} s**</span>', unsafe_allow_html=True)
+                col_title.write(strings.run_time_msg)
+                col_value.markdown(f'<span style="color:#26ba1b">**{end} s**</span>', unsafe_allow_html=True)
 
-    return {"initial_population": initial_population,
-            "final_population": population,
-            "best_individual": best_individual,
-            "best_fitness": evaluation_function(best_individual),
-            "runtime": end}
+    else:
+        result[index] = {"initial_population": initial_population,
+                         "final_population": population,
+                         "best_individual": best_individual,
+                         "best_fitness": evaluation_function(best_individual),
+                         "runtime": end}
