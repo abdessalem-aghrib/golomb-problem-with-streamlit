@@ -71,4 +71,4 @@ computing_time_msg = 'Temp de calcul :'
 trials_neighbor_msg = 'Nombre de Tentatives pour trouver le voisin :'
 trials_temperature_msg = 'Nombre de Tentatives pour chaque niveau de température :'
 
-
+global_run_time_msg = 'Temps d\'exécution total :'

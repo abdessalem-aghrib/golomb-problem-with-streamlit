@@ -13,10 +13,8 @@ separator_body = '<hr style="margin-top:40px;margin-bottom:50px;border-top:2px s
 def hill_climbing(problem_function, marks_count, max_bound, attempts_count=10):
     # best results
     best_params = {}
-    best_result = [{}]
 
     # for results
-    results_container = st.beta_container()
     results = [None]
 
     # start time
@@ -181,7 +179,7 @@ def hill_climbing(problem_function, marks_count, max_bound, attempts_count=10):
             col_value.markdown(f'<span style="color:#26ba1b">**{current_result[0]["runtime"]} s**</span>',
                                unsafe_allow_html=True)
 
-    for n in range(trials_number):
+    for n in range(attempts_count):
         # generate neighbor solution
         initial_temperature = random.uniform(50.0, 50000.0)  # initial temperature
         cooling_coeff = random.uniform(0.1, 0.99)  # cooling coefficient
@@ -266,7 +264,6 @@ def hill_climbing(problem_function, marks_count, max_bound, attempts_count=10):
         fitness_chart.add_rows(new_df)
 
     # draw results
-
     with st.beta_container():
         # separator
         st.markdown(body=separator_body, unsafe_allow_html=True)
@@ -341,3 +338,12 @@ def hill_climbing(problem_function, marks_count, max_bound, attempts_count=10):
             col_value.markdown(f'<span style="color:#26ba1b">**{best_result[0]["runtime"]} s**</span>',
                                unsafe_allow_html=True)
 
+    # write run-time
+    # separator
+    st.markdown(body=separator_body, unsafe_allow_html=True)
+
+    col_title, col_value = st.beta_columns([2, 3])
+
+    col_title.write(strings.global_run_time_msg)
+    col_value.markdown(f'<span style="color:#26ba1b">**{time.time() - start} s**</span>',
+                unsafe_allow_html=True)
