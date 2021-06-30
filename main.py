@@ -278,7 +278,7 @@ def main():
     sidebar = st.sidebar.beta_container()
 
     with sidebar:
-        menu = [strings.simulated_annealing_menu, strings.genetic_menu, strings.comparison_menu, strings.test_menu]
+        menu = [strings.simulated_annealing_menu, strings.genetic_menu, strings.comparison_menu]
         choice = st.selectbox(label=strings.input_algorithm_choice_header, options=menu)
 
     if choice == strings.simulated_annealing_menu:
@@ -306,40 +306,6 @@ def main():
             st.markdown(body=separator_body, unsafe_allow_html=True)
 
         comparison_style(sidebar)
-
-    elif choice == strings.test_menu:
-        with sidebar:
-            # separator
-            st.markdown(body=separator_body, unsafe_allow_html=True)
-
-        initial_temperature = 1000.0  # initial temperature
-        cooling_coeff = 0.7  # cooling coefficient
-        computing_time = 10.0  # in seconds
-        trials_number = 10  # number or trials to get neighborhood before use random one
-        attempts_in_each_level_of_temperature = 100  # number of attempts in each level of temperature
-
-
-        # draw params graphs
-
-        # temperature graph
-        st.header(strings.temperature_params_graph_header)
-        params_chart = st.line_chart()
-
-        start = time.time()
-        for _ in range(100):
-            new_df = pd.DataFrame({
-                'trials': [time.time() - start],
-                'Température': [random.randint(1,100)],
-                'Refroidissement Coéff': [random.randint(1,100)],
-                'Temp de calcul': [random.randint(1,100)],
-                'Tentatives voisin': [random.randint(1,100)],
-                'Tentatives température': [random.randint(1,100)]
-            }).rename(columns={'trials': 'index'}).set_index('index')
-
-            params_chart.add_rows(new_df)
-
-            time.sleep(0.05)
-
 
 if __name__ == '__main__':
     main()
