@@ -93,7 +93,7 @@ def simulated_annealing(marks_count: int, max_bound: int,
                 # draw line chart
                 new_df = pd.DataFrame({
                     'time': [time.time() - start],
-                    y_axis_title: [best_fitness]
+                    y_axis_title: [current_fitness]
                 }).rename(columns={'time': 'index'}).set_index('index')
 
                 if with_lock:
