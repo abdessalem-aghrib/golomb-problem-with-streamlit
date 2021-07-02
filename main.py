@@ -29,7 +29,7 @@ def simulated_annealing_style(sidebar):
         input_computing_time = st.number_input(strings.input_computing_time_header, min_value=0.1, max_value=1000000.0,
                                                value=0.1)
         input_trials_number = st.number_input(strings.input_trials_number_header, min_value=1,
-                                              max_value=1000, value=1)
+                                              max_value=100000, value=10)
         input_attempts_in_each_level_of_temperature = st.number_input(
             strings.input_attempts_in_each_level_of_temperature_header, min_value=1, max_value=10000, value=1)
 
@@ -85,7 +85,7 @@ def genetic_style(sidebar):
         input_mutation_probability = st.number_input(strings.input_mutation_probability_header, min_value=0.1,
                                                      max_value=1.0,
                                                      value=0.2)
-        input_size_of_bits = st.number_input(strings.input_population_size_header, min_value=4, max_value=20,
+        input_size_of_bits = st.number_input(strings.input_size_of_bits_header, min_value=4, max_value=20,
                                              value=10)
         input_max_trying_time_for_correct_ruler = st.number_input(
             strings.input_max_trying_time_for_correct_ruler_header,
@@ -135,7 +135,7 @@ def comparison_style(sidebar):
         input_computing_time = st.number_input(strings.input_computing_time_header, min_value=0.1, max_value=1000000.0,
                                                value=0.1)
         input_trials_number = st.number_input(strings.input_trials_number_header, min_value=1,
-                                              max_value=1000, value=1)
+                                              max_value=100000, value=10)
         input_attempts_in_each_level_of_temperature = st.number_input(
             strings.input_attempts_in_each_level_of_temperature_header, min_value=1, max_value=10000, value=1)
 
@@ -155,7 +155,7 @@ def comparison_style(sidebar):
         input_mutation_probability = st.number_input(strings.input_mutation_probability_header, min_value=0.1,
                                                      max_value=1.0,
                                                      value=0.2)
-        input_size_of_bits = st.number_input(strings.input_population_size_header, min_value=4, max_value=20,
+        input_size_of_bits = st.number_input(strings.input_size_of_bits_header, min_value=4, max_value=20,
                                              value=10)
         input_max_trying_time_for_correct_ruler = st.number_input(
             strings.input_max_trying_time_for_correct_ruler_header,

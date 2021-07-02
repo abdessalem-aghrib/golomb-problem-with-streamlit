@@ -183,10 +183,10 @@ def hill_climbing(problem_function, marks_count, max_bound, attempts_count=10):
         # generate neighbor solution
         initial_temperature = random.uniform(50.0, 50000.0)  # initial temperature
         cooling_coeff = random.uniform(0.1, 0.99)  # cooling coefficient
-        computing_time = random.uniform(0.1, 20.0)  # in seconds
-        trials_number = random.randint(1, 50)  # number or trials to get neighborhood before use random one
+        computing_time = random.uniform(0.1, 60.0)  # in seconds
+        trials_number = random.randint(1, 100000)  # number or trials to get neighborhood before use random one
         attempts_in_each_level_of_temperature = random.randint(1,
-                                                               300)  # number of attempts in each level of temperature
+                                                               600)  # number of attempts in each level of temperature
 
         problem_function(marks_count, max_bound, initial_temperature, cooling_coeff,
                          computing_time, trials_number, attempts_in_each_level_of_temperature,

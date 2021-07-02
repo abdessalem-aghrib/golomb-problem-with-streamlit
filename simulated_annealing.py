@@ -14,7 +14,32 @@ def objective_function(ruler: list[int]) -> int:
     return ruler[len(ruler) - 1] - ruler[0]
 
 
-def neighborhood_function(current_ruler: list[int], marks_count: int, max_bound: int, trials_number: int) -> list[int]:
+def neighborhood_function(current_ruler: list[int], marks_count: int, trials_number: int) -> list[int]:
+
+    max_bound = current_ruler[marks_count - 1]
+
+    interval = [k for k in range(1, max_bound, 1) if k not in current_ruler]
+
+    # try to correct the current ruler
+    stop = False
+    for i in range(marks_count - 1, 0, -1):
+        if not stop:
+            for item in interval:
+                temp_ruler = current_ruler.copy()
+                temp_ruler[i] = item
+                temp_ruler.sort()
+
+                # check if golomb ruler
+                if golomb.is_golomb_ruler(temp_ruler) and temp_ruler != current_ruler:
+                    return temp_ruler
+
+                trials_number -= 1
+
+                if trials_number == 0:
+                    stop = True
+                    break
+
+    '''
     # try to find best neighbor while trials > 0
     while trials_number > 0:
         random_position = random.randint(1, marks_count - 1)
@@ -32,9 +57,11 @@ def neighborhood_function(current_ruler: list[int], marks_count: int, max_bound:
             return temp_ruler
 
         trials_number -= 1
+    '''
+
 
     # if fail to find best neighbor, generate a random one
-    return golomb.generate_golomb_ruler(marks_count, max_bound, max_generate_time=3600)
+    return golomb.generate_golomb_ruler(marks_count, max_bound, max_generate_time=10.0)
 
 
 def simulated_annealing(marks_count: int, max_bound: int,
@@ -47,7 +74,7 @@ def simulated_annealing(marks_count: int, max_bound: int,
 
     current_ruler = initial_ruler.copy()
     best_ruler = initial_ruler.copy()
-    beset_ruler_saved = initial_ruler.copy()
+    best_ruler_saved = initial_ruler.copy()
 
     n = 1  # number of accepted rulers
     i = 1  # iteration number
@@ -57,14 +84,13 @@ def simulated_annealing(marks_count: int, max_bound: int,
     # record_best_fitness = []
 
     # stop by computing time
-    while time.time() - start < computing_time:
+    while (time.time() - start) < computing_time:
         for j in range(attempts_in_each_level_of_temperature):
 
-            current_ruler = neighborhood_function(current_ruler, marks_count,
-                                                  max_bound, trials_number)
+            current_ruler = neighborhood_function(current_ruler, marks_count, trials_number)
 
             if len(current_ruler) == 0:
-                raise ValueError("Fail to find the neighbor ruler")
+                current_ruler = best_ruler
 
             current_fitness = objective_function(current_ruler)
 
@@ -82,10 +108,11 @@ def simulated_annealing(marks_count: int, max_bound: int,
                     accept = False  # this worse ruler is not accepted
             else:
                 accept = True  # accept better ruler
-                beset_ruler_saved = current_ruler.copy()
+                if objective_function(best_ruler_saved) > current_fitness:
+                    best_ruler_saved = current_ruler.copy()
 
             if accept:
-                best_ruler = current_ruler  # update the best ruler
+                best_ruler = current_ruler.copy()  # update the best ruler
                 best_fitness = objective_function(best_ruler)
                 n = n + 1  # count the rulers accepted
 
@@ -103,7 +130,8 @@ def simulated_annealing(marks_count: int, max_bound: int,
                 else:
                     chart.add_rows(new_df)
 
-            # end For Loop
+            if (time.time() - start) > computing_time:
+                break
         # end For Loop
 
         i += 1  # increment iterations number
@@ -112,10 +140,10 @@ def simulated_annealing(marks_count: int, max_bound: int,
         # cooling the temperature
         current_temperature = current_temperature * cooling_coeff
 
-        # end time
-        end = time.time() - start
-
     # end While Loop
+
+    # end time
+    end = time.time() - start
 
     # write results
     if not with_lock:
@@ -127,11 +155,11 @@ def simulated_annealing(marks_count: int, max_bound: int,
         col_value.markdown(f'<span style="color:#26ba1b">**{str(initial_ruler)}**</span>', unsafe_allow_html=True)
 
         col_title.write(strings.best_ruler_founded_msg)
-        col_value.markdown(f'<span style="color:#26ba1b">**{str(beset_ruler_saved)}**</span>', unsafe_allow_html=True)
+        col_value.markdown(f'<span style="color:#26ba1b">**{str(best_ruler_saved)}**</span>', unsafe_allow_html=True)
 
         col_title.write(strings.best_fitness_msg)
         col_value.markdown(
-            f'<span style="color:#26ba1b">**{str(beset_ruler_saved[len(beset_ruler_saved) - 1])}**</span>',
+            f'<span style="color:#26ba1b">**{str(best_ruler_saved[len(best_ruler_saved) - 1])}**</span>',
             unsafe_allow_html=True)
 
         col_title.write(strings.run_time_msg)
@@ -139,7 +167,7 @@ def simulated_annealing(marks_count: int, max_bound: int,
 
     else:
         result[index] = {"initial_ruler": initial_ruler,
-                         "best_ruler": beset_ruler_saved,
-                         "best_fitness": beset_ruler_saved[len(beset_ruler_saved) - 1],
+                         "best_ruler": best_ruler_saved,
+                         "best_fitness": best_ruler_saved[len(best_ruler_saved) - 1],
                          "runtime": end
                          }
