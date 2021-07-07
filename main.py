@@ -53,7 +53,7 @@ def simulated_annealing_style(sidebar):
                                result=None, index=simulated_annealing_id, draw_graph=True)
 
 
-def hill_climbing_style(sidebar):
+def hill_climbing_style(sidebar, algo_name):
     st.title(strings.simulated_annealing_title)
     with sidebar:
         input_marks_count = st.number_input(strings.input_marks_count_header, min_value=2, max_value=500, value=4)
@@ -65,9 +65,13 @@ def hill_climbing_style(sidebar):
         start_bu = st.button(strings.start_bu_text)
 
     if start_bu:
-
-        hc.hill_climbing(problem_function=sa.simulated_annealing, marks_count=input_marks_count,
-                         max_bound=input_max_bound, attempts_count=input_trials_number)
+        if algo_name == strings.simulated_annealing_title:
+            hc.hill_climbing(problem_function=sa.simulated_annealing, algo_name=algo_name, marks_count=input_marks_count,
+                             max_bound=input_max_bound, attempts_count=input_trials_number)
+        elif algo_name == strings.genetic_title:
+            hc.hill_climbing(problem_function=genetic.genetic, algo_name=algo_name,
+                             marks_count=input_marks_count,
+                             max_bound=input_max_bound, attempts_count=input_trials_number)
 
 
 def genetic_style(sidebar):
@@ -291,14 +295,19 @@ def main():
         if not hill_climbing_checkbox:
             simulated_annealing_style(sidebar)
         else:
-            hill_climbing_style(sidebar)
+            hill_climbing_style(sidebar,algo_name=strings.simulated_annealing_title)
 
     elif choice == strings.genetic_menu:
         with sidebar:
+            hill_climbing_checkbox = st.checkbox(strings.hill_climbing_checkbox_header)
+
             # separator
             st.markdown(body=separator_body, unsafe_allow_html=True)
 
-        genetic_style(sidebar)
+        if not hill_climbing_checkbox:
+            genetic_style(sidebar)
+        else:
+            hill_climbing_style(sidebar, algo_name=strings.genetic_title)
 
     elif choice == strings.comparison_menu:
         with sidebar:
@@ -306,6 +315,7 @@ def main():
             st.markdown(body=separator_body, unsafe_allow_html=True)
 
         comparison_style(sidebar)
+
 
 if __name__ == '__main__':
     main()

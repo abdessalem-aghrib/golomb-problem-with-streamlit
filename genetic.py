@@ -231,7 +231,7 @@ def get_best_individual(population: list[list[int]]):
 def genetic(population_size: int, generation_count: int, crossing_probability: float, mutation_probability: float,
             marks_count: int, max_bound: int, size_of_bits: int,
             max_trying_time_for_correct_ruler: float, y_axis_title: str, chart, with_lock: bool, thread_lock=None,
-            result=None, index=0):
+            result=None, index=0, draw_graph=True):
     start = time.time()
     record_best_individuals_from_all_generations = []
 
@@ -304,34 +304,36 @@ def genetic(population_size: int, generation_count: int, crossing_probability: f
             if not new_pop.__contains__(parent_1) and len(new_pop) < population_size:
                 new_pop.append(parent_1.copy())
 
-                # draw line chart
-                new_df = pd.DataFrame({
-                    'time': [time.time() - start],
-                    y_axis_title: [evaluation_function(parent_1)]
-                }).rename(columns={'time': 'index'}).set_index('index')
+                if draw_graph:
+                    # draw line chart
+                    new_df = pd.DataFrame({
+                        'time': [time.time() - start],
+                        y_axis_title: [evaluation_function(parent_1)]
+                    }).rename(columns={'time': 'index'}).set_index('index')
 
-                if with_lock:
-                    thread_lock.acquire()
-                    chart.add_rows(new_df)
-                    thread_lock.release()
-                else:
-                    chart.add_rows(new_df)
+                    if with_lock:
+                        thread_lock.acquire()
+                        chart.add_rows(new_df)
+                        thread_lock.release()
+                    else:
+                        chart.add_rows(new_df)
 
             if not new_pop.__contains__(parent_2) and len(new_pop) < population_size:
                 new_pop.append(parent_2.copy())
 
-                # draw line chart
-                new_df = pd.DataFrame({
-                    'time': [time.time() - start + 0.2],
-                    y_axis_title: [evaluation_function(parent_2)]
-                }).rename(columns={'time': 'index'}).set_index('index')
+                if draw_graph:
+                    # draw line chart
+                    new_df = pd.DataFrame({
+                        'time': [time.time() - start + 0.2],
+                        y_axis_title: [evaluation_function(parent_2)]
+                    }).rename(columns={'time': 'index'}).set_index('index')
 
-                if with_lock:
-                    thread_lock.acquire()
-                    chart.add_rows(new_df)
-                    thread_lock.release()
-                else:
-                    chart.add_rows(new_df)
+                    if with_lock:
+                        thread_lock.acquire()
+                        chart.add_rows(new_df)
+                        thread_lock.release()
+                    else:
+                        chart.add_rows(new_df)
 
         # updates
         gen += 1

@@ -29,6 +29,12 @@ computing_time_params_graph_header = 'Temp de calcul en fonction du nombre de te
 trials_neighbor_params_graph_header = 'Nombre de Tentatives pour trouver le voisin en fonction du nombre de tentatives pour le Hill-Climbing :'.title()
 trials_temperature_params_graph_header = 'Nombre de Tentatives pour chaque niveau de température en fonction du nombre tentatives pour le de Hill-Climbing :'.title()
 
+population_size_params_graph_header = 'Taille de la population en fonction du nombre de tentatives pour le Hill-Climbing :'.title()
+generation_count_params_graph_header = 'Nombre de générations en fonction du nombre de tentatives pour le Hill-Climbing :'.title()
+crossing_probability_params_graph_header = 'Probabilité de croisement en fonction du nombre de tentatives pour le Hill-Climbing :'.title()
+mutation_probability_params_graph_header = 'Probabilité de mutation en fonction du nombre de tentatives pour le Hill-Climbing :'.title()
+
+
 fitness_graph_header = 'Fitness trouvés en fonction de nombre de tentatives :'.title()
 comparison_graph_header = 'Fitness trouvés en fonction du temps :'.title()
 results_header = 'Résultats trouvés :'.title()
@@ -53,6 +59,7 @@ test_menu = 'For DEV test'.title()
 
 # MESSAGES
 initial_generation_msg = 'Génération initial : '
+final_generation_msg = 'Génération finale : '
 best_ruler_of_this_generation_msg = 'Meilleure règle de cette génération : '
 generation_msg = 'Génération'
 best_ruler_of_all_generation_msg = 'Meilleure règle trouvée de toutes les générations : '
@@ -71,4 +78,10 @@ computing_time_msg = 'Temp de calcul :'
 trials_neighbor_msg = 'Nombre de Tentatives pour trouver le voisin :'
 trials_temperature_msg = 'Nombre de Tentatives pour chaque niveau de température :'
 
+population_size_msg = 'Taille de la population :'
+generation_count_msg = 'Nombre de générations :'
+crossing_probability_msg = 'Probabilité de croisement :'
+mutation_probability_msg = 'Probabilité de mutation :'
+
 global_run_time_msg = 'Temps d\'exécution total :'
+
