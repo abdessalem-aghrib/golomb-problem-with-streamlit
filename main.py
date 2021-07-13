@@ -54,7 +54,7 @@ def simulated_annealing_style(sidebar):
 
 
 def hill_climbing_style(sidebar, algo_name):
-    st.title(strings.simulated_annealing_title)
+    st.title(algo_name)
     with sidebar:
         input_marks_count = st.number_input(strings.input_marks_count_header, min_value=2, max_value=500, value=4)
         input_max_bound = st.number_input(strings.input_max_bound_header, min_value=10, max_value=100000, value=100)
